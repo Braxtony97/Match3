@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-public static class GameEnums
+﻿public static class GameEnums
 {
     public enum SceneType
     {
+        Boot,
         MainMenu,
         Gameplay
     }
