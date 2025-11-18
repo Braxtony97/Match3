@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-
-public class BootstrapState : IState
+﻿public class BootstrapState : IState
+// State, отвечающий за регистрацию сервисов в ServiceLocator
 {
     private ServiceLocator _serviceLocator;
     private GameStateMachine _stateMachine;
@@ -23,12 +22,7 @@ public class BootstrapState : IState
 
     public void Enter()
     {
-        _sceneLoader.Load(GameEnums.SceneType.MainMenu.ToString(), onLoaded: EnterMainMenu);
-    }
-
-    private void EnterMainMenu()
-    {
-        Debug.Log("Loaded");
+        _stateMachine.Enter<LoadProgressState>();
     }
 
     public void Exit()
