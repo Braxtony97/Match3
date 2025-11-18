@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class GameBootstrapper : MonoBehaviour, ICoroutineRunner
@@ -11,6 +10,9 @@ public class GameBootstrapper : MonoBehaviour, ICoroutineRunner
         LoadGame();
     }
 
-    private void LoadGame() => 
+    private void LoadGame()
+    {
         _game = new Game(this);
+        _game.StateMachine.Enter<BootstrapState>();
+    }
 }
