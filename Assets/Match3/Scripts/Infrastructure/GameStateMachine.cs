@@ -12,7 +12,8 @@ public class GameStateMachine : IGameStateMachine
         {
             [typeof(BootstrapState)] = new BootstrapState(this, sceneLoader, serviceLocator),
             [typeof(LoadProgressState)] = new LoadProgressState(this),
-            [typeof(LoadSceneState)] = new LoadSceneState(this, sceneLoader)
+            [typeof(LoadSceneState)] = new LoadSceneState(this, sceneLoader, serviceLocator.Resolve<IGameFactory>()),
+            [typeof(PlayModeState)] = new PlayModeState(this, sceneLoader)
         };
     }
 

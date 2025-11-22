@@ -18,6 +18,9 @@
     {
         _serviceLocator.Register<IGameStateMachine>(_stateMachine);
         _serviceLocator.Register<SceneLoader>(_sceneLoader);
+        _serviceLocator.Register<IAssetProvider>(new AssetProvider());
+        _serviceLocator.Register<IGameFactory>(new GameFactory(_serviceLocator.Resolve<IAssetProvider>(), 
+            _serviceLocator.Resolve<IGameStateMachine>()));
     }
 
     public void Enter()
