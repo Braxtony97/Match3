@@ -26,7 +26,13 @@ public class GridManager : MonoBehaviour
 
     private void GenerateGridData()
     {
-        
+        for (int row = 0; row < _height; row++)
+        {
+            for (int col = 0; col < _width; col++)
+            {
+                _grid[row, col] = Random.Range(0, _tileTypes.Length);  
+            }
+        }
     }
 
     private void GenerateGridView()
@@ -50,7 +56,11 @@ public class GridManager : MonoBehaviour
                 rect.anchoredPosition = new Vector2(x, y);
 
                 tile.SetPositionInUI(row, col);
-                tile.SetSprite(_grid[row, col]);
+                
+                
+                int tileId = _grid[row, col];
+                TileStaticData data = _tileTypes[tileId];
+                tile.SetSprite(data.Sprite);
 
                 _gridViews[row, col] = tile;
             }

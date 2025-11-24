@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class TileView : MonoBehaviour
 {
+    [SerializeField] private Image _image;
+    
     private int _col;
     private int _row;
 
@@ -11,7 +14,8 @@ public class TileView : MonoBehaviour
        _col = col;
     }
 
-    public void SetSprite(int i)
+    public void SetSprite(Sprite sprite)
     {
+        _image.sprite = sprite; 
     }
 }

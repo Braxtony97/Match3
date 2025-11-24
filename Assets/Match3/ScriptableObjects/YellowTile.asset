@@ -10,6 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2d973bb766850f44a9ab636ac90c6273, type: 3}
-  m_Name: Tile
+  m_Name: YellowTile
   m_EditorClassIdentifier: Assembly-CSharp::TileStaticData
-  TilePrefab: {fileID: 0}
+  Id: 1
+  Sprite: {fileID: -2023477343, guid: 61721fdd11f38274cbe74ff0624bcc2f, type: 3}
