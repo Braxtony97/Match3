@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8374829665231113768}
   - component: {fileID: 6788892414301663844}
   - component: {fileID: 4230381155133680655}
+  - component: {fileID: 6702391927215587110}
   m_Layer: 5
   m_Name: Tile
   m_TagString: Untagged
@@ -89,3 +90,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TileView
   _image: {fileID: 6788892414301663844}
+  _tileSwipe: {fileID: 6702391927215587110}
+  _rectTransform: {fileID: 9163248751085538111}
+--- !u!114 &6702391927215587110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2751635650837297531}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f723bdb67254ee9a3817d7bf22bf063, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TileSwipe
+  _rectTransform: {fileID: 9163248751085538111}

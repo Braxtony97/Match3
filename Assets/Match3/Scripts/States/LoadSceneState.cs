@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class LoadSceneState : IPayloadState<string>
-//State, отвечающий за создание объектов на сцене с помощью GameFactory
 {
     private readonly SceneLoader _sceneLoader;
     private readonly IGameFactory _gameFactory;
     private readonly GameStateMachine _stateMachine;
+    private readonly IServiceProvider _serviceProvider;
 
     public LoadSceneState(GameStateMachine stateMachine, SceneLoader sceneLoader, IGameFactory gameFactory)
     {
@@ -29,7 +30,6 @@ public class LoadSceneState : IPayloadState<string>
 
     private void InitUIRoot()
     {
-        Debug.Log("Создание UI");
     }
 
     private void InitGameWorld()
@@ -39,10 +39,12 @@ public class LoadSceneState : IPayloadState<string>
 
     private void CreateGrid()
     {
-        GameObject manager = _gameFactory.CreateGridManager(ResourcesPaths.GridManagerPath);
-        GridManager gridManager = manager.GetComponent<GridManager>();
-        gridManager.CreateGrid();
-        
+        BoardConfig config = ServiceLocator.Instance.Resolve<BoardConfig>();
+        Board board = new Board(config.Width, config.Height);
+        board.FillRandom(config.UniqueTiles);
+        GameObject manager = _gameFactory.CreateGridManager(ResourcesPaths.GridViewPath);
+        BoardView boardView = manager.GetComponent<BoardView>();
+        boardView.CreateGrid(board);
     }
 
     public void Exit()

@@ -1,4 +1,6 @@
-﻿public class BootstrapState : IState
+﻿using UnityEngine;
+
+public class BootstrapState : IState
 // State, отвечающий за регистрацию сервисов в ServiceLocator
 {
     private ServiceLocator _serviceLocator;
@@ -21,6 +23,9 @@
         _serviceLocator.Register<IAssetProvider>(new AssetProvider());
         _serviceLocator.Register<IGameFactory>(new GameFactory(_serviceLocator.Resolve<IAssetProvider>(), 
             _serviceLocator.Resolve<IGameStateMachine>()));
+        
+        BoardConfig config = Resources.Load<BoardConfig>("Configs/BoardConfig");
+        _serviceLocator.Register<BoardConfig>(config);
     }
 
     public void Enter()

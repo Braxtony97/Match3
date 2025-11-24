@@ -5,6 +5,8 @@ public class GameStateMachine : IGameStateMachine
 {
     private readonly Dictionary<Type, IExitableState> _states;
     private IExitableState _currentState;
+    
+    private readonly BoardConfig _boardConfig;
 
     public GameStateMachine(SceneLoader sceneLoader, ServiceLocator serviceLocator)
     {
