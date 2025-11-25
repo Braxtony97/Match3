@@ -42,9 +42,11 @@ public class LoadSceneState : IPayloadState<string>
         BoardConfig config = ServiceLocator.Instance.Resolve<BoardConfig>();
         Board board = new Board(config.Width, config.Height);
         board.FillRandom(config.UniqueTiles);
-        GameObject manager = _gameFactory.CreateGridManager(ResourcesPaths.GridViewPath);
+        GameObject manager = _gameFactory.CreateGridView(ResourcesPaths.GridViewPath);
         BoardView boardView = manager.GetComponent<BoardView>();
         boardView.CreateGrid(board);
+        BoardController boardController = new  BoardController(board, boardView);
+        boardController.Initialize();
     }
 
     public void Exit()

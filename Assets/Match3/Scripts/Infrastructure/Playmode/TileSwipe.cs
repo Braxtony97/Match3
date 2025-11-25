@@ -1,8 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class TileSwipe : MonoBehaviour, IDragable, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
+    public event Action<Vector2Int> OnSwipe; 
+    
     [SerializeField] private RectTransform _rectTransform;
     
     private Canvas _canvas;
@@ -40,5 +43,19 @@ public class TileSwipe : MonoBehaviour, IDragable, IPointerDownHandler, IDragHan
     public void OnPointerUp(PointerEventData eventData)
     {
         _isDragging = false;
+        
+        Vector2 diff = _rectTransform.anchoredPosition - _startPosition;
+
+        Vector2Int direction = Vector2Int.zero;
+
+        if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
+            direction = diff.x > 0 ? Vector2Int.right : Vector2Int.left;
+        else
+            direction = diff.y > 0 ? Vector2Int.up : Vector2Int.down;
+
+        OnSwipe?.Invoke(direction);
+
+        // Возврат UI на место (если controller запретит своп)
+        _rectTransform.anchoredPosition = _startPosition;
     }
 }

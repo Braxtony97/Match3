@@ -11,7 +11,7 @@ public class GameFactory : IGameFactory
         _gameStateMachine = gameStateMachine;
     }
 
-    public GameObject CreateGridManager(string prefabPath)
+    public GameObject CreateGridView(string prefabPath)
     {
         var gameObject = _assetProvider.Instantiate(prefabPath);
         return gameObject;

@@ -2,6 +2,7 @@
 
 public class BoardView : MonoBehaviour
 {
+    public TileView[,] GetTiles() => _gridViews;
     public float TileSize => _tileSize;
     public float Spacing => _spacing;
     
@@ -51,5 +52,17 @@ public class BoardView : MonoBehaviour
                 _gridViews[row, col] = tile;
             }
         }
+    }
+    
+    public void SwapTiles(int r1, int c1, int r2, int c2)
+    {
+        TileView t1 = _gridViews[r1, c1];
+        var t2 = _gridViews[r2, c2];
+
+        Sprite s1 = t1.Sprit;
+        Sprite s2 = t2.Sprit;
+
+        t1.SetSprite(s2);
+        t2.SetSprite(s1);
     }
 }
