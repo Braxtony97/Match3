@@ -11,6 +11,8 @@
 
     public void Enter()
     {
+        //BoardController boardController = new  BoardController(board, boardView);
+        //boardController.Initialize();
     }
 
     public void Exit()

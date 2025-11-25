@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Board
+public class Board : IBoard
 {
     public int Width => _width;
     public int Height => _height; 
@@ -24,12 +24,5 @@ public class Board
         for (int row = 0; row < _height; row++)
         for (int col = 0; col < _width; col++)
             _grid[row, col] = Random.Range(0, tileTypesCount);
-    }
-    
-    public void Swap(int r1, int c1, int r2, int c2)
-    {
-        int temp = _grid[r1, c1];
-        _grid[r1, c1] = _grid[r2, c2];
-        _grid[r2, c2] = temp;
     }
 }

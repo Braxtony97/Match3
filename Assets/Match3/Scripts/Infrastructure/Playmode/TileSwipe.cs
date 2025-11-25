@@ -54,8 +54,7 @@ public class TileSwipe : MonoBehaviour, IDragable, IPointerDownHandler, IDragHan
             direction = diff.y > 0 ? Vector2Int.up : Vector2Int.down;
 
         OnSwipe?.Invoke(direction);
-
-        // Возврат UI на место (если controller запретит своп)
+        
         _rectTransform.anchoredPosition = _startPosition;
     }
 }
