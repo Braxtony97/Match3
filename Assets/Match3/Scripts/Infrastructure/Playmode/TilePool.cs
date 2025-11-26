@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class TilePool : MonoBehaviour
 {
-    [SerializeField] private int _initialPoolSize = 64;
-        
+    private int _initialPoolSize;
     private Queue<TileView> _tilePool = new Queue<TileView>();
     private Transform _gridParent;
     private TileView _tilePrefab;
 
-    public void InitPool(TileView tilePrefab, Transform gridParent)
+    public void InitPool(TileView tilePrefab, Transform gridParent, BoardConfig boardConfig)
     {
+        _initialPoolSize = (boardConfig.Height * boardConfig.Width) * 2;
         _tilePrefab = tilePrefab;
         _gridParent = gridParent;
         

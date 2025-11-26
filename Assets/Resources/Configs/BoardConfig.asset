@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09e7ae3d73a148ef8d3cff26ed5a8954, type: 3}
   m_Name: BoardConfig
   m_EditorClassIdentifier: Assembly-CSharp::BoardConfig
-  Width: 7
-  Height: 6
+  Width: 4
+  Height: 4
   UniqueTiles: 3

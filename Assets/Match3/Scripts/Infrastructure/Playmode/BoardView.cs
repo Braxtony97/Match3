@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class BoardView : MonoBehaviour
+public class BoardView : MonoBehaviour, IBoardView
 {
     public TileView[,] GetTiles() => _gridViews;
     public float TileSize => _tileSize;
@@ -21,10 +21,10 @@ public class BoardView : MonoBehaviour
     private TileView[,] _gridViews;
     private IBoard _board;
 
-    public void CreateGrid(IBoard board)
+    public void CreateGrid(IBoard board, BoardConfig boardConfig)
     {
         _board = board; 
-        _tilePool.InitPool(_tilePrefab, _gridParent);
+        _tilePool.InitPool(_tilePrefab, _gridParent, boardConfig);
         _gridViews = new TileView[board.Height, board.Width];
         GenerateGridView(board);
     }
@@ -45,7 +45,7 @@ public class BoardView : MonoBehaviour
         return tile;
     }
 
-    private void GenerateGridView(IBoard board)
+    public void GenerateGridView(IBoard board)
     {
         for (int row = 0; row < board.Height; row++)
         {
@@ -68,7 +68,7 @@ public class BoardView : MonoBehaviour
         }
     }
 
-    private void SetTilePosition(IBoard board, TileView tile, int row, int col)
+    public void SetTilePosition(IBoard board, TileView tile, int row, int col)
     {
         float totalWidth = _board.Width * (_tileSize + _spacing) - _spacing;
         float totalHeight = _board.Height * (_tileSize + _spacing) - _spacing;
@@ -79,19 +79,22 @@ public class BoardView : MonoBehaviour
         float x = startX + col * (_tileSize + _spacing);
         float y = startY - row * (_tileSize + _spacing);
         
-        RectTransform rect = tile.RectTransform;
-        rect.anchoredPosition = new Vector2(x, y);
+        tile.RectTransform.anchoredPosition = new Vector2(x, y);
     }
 
     public void SwapTiles(int row, int col, int targetRow, int targetCol)
     {
-        TileView temp = _gridViews[row, col];
+        TileView tempTile = _gridViews[row, col];
+        TileView targetTile = _gridViews[targetRow, targetCol];
         
-        _gridViews[row, col] = _gridViews[targetRow, targetCol];
-        _gridViews[targetRow, targetCol] = temp;
+        _gridViews[row, col] = targetTile;
+        _gridViews[targetRow, targetCol] = tempTile;
         
-        _gridViews[row, col].SetPositionInUI(row, col);
-        _gridViews[targetRow, targetCol].SetPositionInUI(targetRow, targetCol);
+        tempTile.SetPositionInUI(targetRow, targetCol);
+        targetTile.SetPositionInUI(row, col);
+        
+        SetTilePosition(_board, tempTile, targetRow, targetCol);
+        SetTilePosition(_board, targetTile, row, col);
     }
 
     public void ClearTile(int row, int col)

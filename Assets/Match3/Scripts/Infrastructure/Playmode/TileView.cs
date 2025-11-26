@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class TileView : MonoBehaviour
 {
-    public Sprite Sprit => _image.sprite;
+    public Sprite Sprite => _image.sprite;
     public event Action<int, int, Vector2Int> OnSwipe;
     public RectTransform RectTransform => _rectTransform;
     
@@ -21,10 +21,8 @@ public class TileView : MonoBehaviour
         _tileSwipe.OnSwipe += HandleSwipe;
     }
 
-    private void HandleSwipe(Vector2Int direction)
-    { 
+    private void HandleSwipe(Vector2Int direction) => 
         OnSwipe?.Invoke(_row, _col, direction);
-    }
 
     public void SetPositionInUI(int row, int col)
     {
@@ -34,4 +32,7 @@ public class TileView : MonoBehaviour
 
     public void SetSprite(Sprite sprite) => 
         _image.sprite = sprite;
+
+    private void OnDestroy() => 
+        _tileSwipe.OnSwipe -= HandleSwipe;
 }

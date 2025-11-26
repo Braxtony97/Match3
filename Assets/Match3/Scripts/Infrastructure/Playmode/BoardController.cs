@@ -2,10 +2,10 @@
 
 public class BoardController
 {
-    private Board _board;
-    private BoardView _view;
+    private IBoard _board;
+    private IBoardView _view;
 
-    public BoardController(Board board, BoardView view)
+    public BoardController(IBoard board, IBoardView view)
     {
         _board = board;
         _view = view;
@@ -46,19 +46,18 @@ public class BoardController
     private void TrySwap(int row, int col, int targetRow, int targetCol)
     {
         SwapInModel(row, col, targetRow, targetCol);
+        SwapInView(row, col, targetRow, targetCol);
         
         MatchResult match = FindAllMatches();
 
         if (match.HasMatches)
         {
             RemoveMatches(match);
-            ApplyGravityAndFill();
+            //ApplyGravityAndFill();
         }
         else
         {
-            // Откат
-            SwapInModel(row, col, targetRow, targetCol);
-            Debug.Log("No match. Swap reverted.");
+            //SwapInModel(row, col, targetRow, targetCol);
         }
     }
 
@@ -74,14 +73,16 @@ public class BoardController
 
     private void SwapInModel(int row, int col, int targetRow, int targetCol)
     {
-        int temp = _board.Get(row, col);
+        int tempTile = _board.Get(row, col);
+        int targetTile = _board.Get(targetRow, targetCol);
         
-        _board.Set(row, col, _board.Get(targetRow, targetCol));
-        _board.Set(targetRow, targetCol, temp);
-        
-        _view.SwapTiles(row, col, targetRow, targetCol);
+        _board.Set(row, col, targetTile);
+        _board.Set(targetRow, targetCol, tempTile);
     }
     
+    private void SwapInView(int row, int col, int targetRow, int targetCol) => 
+        _view.SwapTiles(row, col, targetRow, targetCol);
+
     private void FindHorizontalMatches(MatchResult result)
     {
         for (int row = 0; row < _board.Height; row++)
@@ -144,8 +145,8 @@ public class BoardController
     {
         foreach (var pos in result.MatchedTiles)
         {
-            _board.Set(pos.x, pos.y, -1); // -1 = пустая ячейка
-            _view.ClearTile(pos.x, pos.y); // сделаешь анимацию позже
+            _board.Set(pos.x, pos.y, -1); 
+            _view.ClearTile(pos.x, pos.y); 
         }
     }
     
@@ -172,8 +173,7 @@ public class BoardController
                     writeRow--;
                 }
             }
-
-            // заполняем пустые сверху
+            
             for (int row = writeRow; row >= 0; row--)
                 _board.Set(row, col, -1);
         }
@@ -205,8 +205,7 @@ public class BoardController
             for (int col = 0; col < _board.Width; col++)
             {
                 int tileId = _board.Get(row, col);
-
-                // пустая ячейка
+                
                 if (tileId == -1)
                 {
                     if (tiles[row, col] != null)
@@ -215,8 +214,7 @@ public class BoardController
                     }
                     continue;
                 }
-
-                // нет TileView — создаём
+                
                 if (tiles[row, col] == null)
                 {
                     TileView tv = _view.SpawnTile(row, col, tileId);

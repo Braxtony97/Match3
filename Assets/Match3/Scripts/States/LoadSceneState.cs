@@ -38,19 +38,20 @@ public class LoadSceneState : IPayloadState<string>
         PrepareBoard();
         PrepareBoardView();
     }
+    
+    private void PrepareBoard()
+    {
+        _board = new BoardModel(_boardConfig.Width, _boardConfig.Height);
+        _board.FillRandom(_boardConfig.UniqueTiles);
+        _serviceLocator.Register<IBoard>(_board);
+    }
 
     private void PrepareBoardView()
     {
         GameObject projectContext = _gameFactory.CreateGridView(ResourcesPaths.ProjectContextPath);
         BoardView boardView = projectContext.GetComponent<BoardView>();
-        boardView.CreateGrid(_board);
-    }
-
-    private void PrepareBoard()
-    {
-        _board = new Board(_boardConfig.Width, _boardConfig.Height);
-        _board.FillRandom(_boardConfig.UniqueTiles);
-        _serviceLocator.Register(_board);
+        boardView.CreateGrid(_board, _boardConfig);
+        _serviceLocator.Register<IBoardView>(boardView);
     }
 
     public void Exit()

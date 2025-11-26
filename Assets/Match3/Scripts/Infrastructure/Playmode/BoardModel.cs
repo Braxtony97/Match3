@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Board : IBoard
+public class BoardModel : IBoard
 {
     public int Width => _width;
     public int Height => _height; 
@@ -9,7 +9,7 @@ public class Board : IBoard
     private int _height;
     private int[,] _grid;
 
-    public Board(int width, int height)
+    public BoardModel(int width, int height)
     {
         _width = width;
         _height = height; 
@@ -22,7 +22,11 @@ public class Board : IBoard
     public void FillRandom(int tileTypesCount)
     {
         for (int row = 0; row < _height; row++)
-        for (int col = 0; col < _width; col++)
-            _grid[row, col] = Random.Range(0, tileTypesCount);
+        {
+            for (int col = 0; col < _width; col++)
+            {
+                _grid[row, col] = Random.Range(0, tileTypesCount);
+            }
+        }
     }
 }
