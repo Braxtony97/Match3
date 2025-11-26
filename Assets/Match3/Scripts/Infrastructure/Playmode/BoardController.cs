@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public class BoardController
 {
@@ -46,19 +47,23 @@ public class BoardController
     private void TrySwap(int row, int col, int targetRow, int targetCol)
     {
         SwapInModel(row, col, targetRow, targetCol);
-        SwapInView(row, col, targetRow, targetCol);
+        Tween tween = _view.SwapTiles(row, col, targetRow, targetCol);
         
-        MatchResult match = FindAllMatches();
+        tween.OnComplete(() =>
+        {
+            MatchResult match = FindAllMatches();
 
-        if (match.HasMatches)
-        {
-            RemoveMatches(match);
-            //ApplyGravityAndFill();
-        }
-        else
-        {
-            //SwapInModel(row, col, targetRow, targetCol);
-        }
+            if (match.HasMatches)
+            {
+                RemoveMatches(match);
+                //ApplyGravityAndFill(); 
+            }
+            else
+            {
+                SwapInModel(row, col, targetRow, targetCol);
+                Tween back = _view.SwapTiles(targetRow, targetCol, row, col);
+            }
+        });
     }
 
     private MatchResult FindAllMatches()
@@ -79,9 +84,6 @@ public class BoardController
         _board.Set(row, col, targetTile);
         _board.Set(targetRow, targetCol, tempTile);
     }
-    
-    private void SwapInView(int row, int col, int targetRow, int targetCol) => 
-        _view.SwapTiles(row, col, targetRow, targetCol);
 
     private void FindHorizontalMatches(MatchResult result)
     {

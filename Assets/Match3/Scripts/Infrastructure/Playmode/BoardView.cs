@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public class BoardView : MonoBehaviour, IBoardView
 {
@@ -82,7 +83,7 @@ public class BoardView : MonoBehaviour, IBoardView
         tile.RectTransform.anchoredPosition = new Vector2(x, y);
     }
 
-    public void SwapTiles(int row, int col, int targetRow, int targetCol)
+    public Tween SwapTiles(int row, int col, int targetRow, int targetCol)
     {
         TileView tempTile = _gridViews[row, col];
         TileView targetTile = _gridViews[targetRow, targetCol];
@@ -92,9 +93,25 @@ public class BoardView : MonoBehaviour, IBoardView
         
         tempTile.SetPositionInUI(targetRow, targetCol);
         targetTile.SetPositionInUI(row, col);
+
+        return AnimateSwap(tempTile, targetTile)
+            .OnComplete(() =>
+            {
+                SetTilePosition(_board, tempTile, targetRow, targetCol);
+                SetTilePosition(_board, targetTile, row, col);
+            });
+    }
+    
+    public Tween AnimateSwap(TileView a, TileView b, float duration = 0.2f)
+    {
+        Vector2 aPos = a.RectTransform.anchoredPosition;
+        Vector2 bPos = b.RectTransform.anchoredPosition;
         
-        SetTilePosition(_board, tempTile, targetRow, targetCol);
-        SetTilePosition(_board, targetTile, row, col);
+        Sequence seq = DOTween.Sequence();
+        seq.Join(a.RectTransform.DOAnchorPos(bPos, duration).SetEase(Ease.OutBack));
+        seq.Join(b.RectTransform.DOAnchorPos(aPos, duration).SetEase(Ease.OutBack));
+
+        return seq;
     }
 
     public void ClearTile(int row, int col)

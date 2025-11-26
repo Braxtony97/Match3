@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public interface IBoardView : IService
 {
@@ -11,6 +12,6 @@ public interface IBoardView : IService
     TileView SpawnTile(int row, int col, int tileId);
     void GenerateGridView(IBoard board);
     void SetTilePosition(IBoard board, TileView tile, int row, int col);
-    void SwapTiles(int row, int col, int targetRow, int targetCol);
+    Tween SwapTiles(int row, int col, int targetRow, int targetCol);
     void ClearTile(int row, int col);
 }
