@@ -7,12 +7,18 @@ public class LoadSceneState : IPayloadState<string>
     private readonly IGameFactory _gameFactory;
     private readonly GameStateMachine _stateMachine;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ServiceLocator _serviceLocator;
+    private readonly BoardConfig _boardConfig;
+    private IBoard _board;
 
     public LoadSceneState(GameStateMachine stateMachine, SceneLoader sceneLoader, IGameFactory gameFactory)
     {
         _sceneLoader = sceneLoader;
         _gameFactory = gameFactory;
         _stateMachine = stateMachine;
+        
+        _serviceLocator = ServiceLocator.Instance;
+        _boardConfig = _serviceLocator.Resolve<BoardConfig>();
     }
 
     public void Enter(string payload)
@@ -22,29 +28,30 @@ public class LoadSceneState : IPayloadState<string>
 
     private void OnLoaded()
     {
-        InitUIRoot();
         InitGameWorld();
         
         _stateMachine.Enter<PlayModeState>();
     }
 
-    private void InitUIRoot()
-    {
-    }
-
     private void InitGameWorld()
     {
-        CreateGrid();
+        PrepareBoard();
+        PrepareBoardView();
+    }
+    
+    private void PrepareBoard()
+    {
+        _board = new BoardModel(_boardConfig.Width, _boardConfig.Height);
+        _board.FillRandom(_boardConfig.UniqueTiles);
+        _serviceLocator.Register<IBoard>(_board);
     }
 
-    private void CreateGrid()
+    private void PrepareBoardView()
     {
-        BoardConfig config = ServiceLocator.Instance.Resolve<BoardConfig>();
-        Board board = new Board(config.Width, config.Height);
-        board.FillRandom(config.UniqueTiles);
-        GameObject manager = _gameFactory.CreateGridManager(ResourcesPaths.GridViewPath);
-        BoardView boardView = manager.GetComponent<BoardView>();
-        boardView.CreateGrid(board);
+        GameObject projectContext = _gameFactory.CreateGridView(ResourcesPaths.ProjectContextPath);
+        BoardView boardView = projectContext.GetComponent<BoardView>();
+        boardView.CreateGrid(_board, _boardConfig);
+        _serviceLocator.Register<IBoardView>(boardView);
     }
 
     public void Exit()

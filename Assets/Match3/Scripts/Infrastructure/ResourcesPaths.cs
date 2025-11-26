@@ -1,4 +1,4 @@
 ﻿public static class ResourcesPaths
 {
-    public const string GridViewPath = "GridView"; 
+    public const string ProjectContextPath = "ProjectContext"; 
 }

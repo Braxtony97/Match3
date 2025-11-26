@@ -1,11 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TileSwipe : MonoBehaviour, IDragable, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class TileSwipe : MonoBehaviour, IDragable, IPointerDownHandler, IPointerUpHandler
 {
+    public event Action<Vector2Int> OnSwipe; 
+    
     [SerializeField] private RectTransform _rectTransform;
     
     private Canvas _canvas;
+    private Vector2 _pointerDownPos;
     private bool _isDragging;
     
     private float _maxSwipeDistance;
@@ -19,26 +23,31 @@ public class TileSwipe : MonoBehaviour, IDragable, IPointerDownHandler, IDragHan
     
     public void OnPointerDown(PointerEventData eventData)
     {
-        _startPosition = _rectTransform.anchoredPosition;
-        _isDragging = true;
-    }
-    
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (!_isDragging)
-            return;
-        
-        Vector2 delta = eventData.delta / _canvas.scaleFactor;
-        Vector2 targetPos = _rectTransform.anchoredPosition + delta;
-        
-        targetPos.x = Mathf.Clamp(targetPos.x, _startPosition.x - _maxSwipeDistance, _startPosition.x + _maxSwipeDistance);
-        targetPos.y = Mathf.Clamp(targetPos.y, _startPosition.y - _maxSwipeDistance, _startPosition.y + _maxSwipeDistance);
-        
-        _rectTransform.anchoredPosition = targetPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            _canvas.transform as RectTransform,
+            eventData.position,
+            eventData.pressEventCamera,
+            out _pointerDownPos
+        );
     }
     
     public void OnPointerUp(PointerEventData eventData)
     {
-        _isDragging = false;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            _canvas.transform as RectTransform,
+            eventData.position,
+            eventData.pressEventCamera,
+            out Vector2 pointerUpPos
+        );
+
+        Vector2 diff = pointerUpPos - _pointerDownPos;
+        
+        if (diff.magnitude < _maxSwipeDistance * 0.3f) 
+            return;
+
+        if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
+            OnSwipe?.Invoke(diff.x > 0 ? Vector2Int.right : Vector2Int.left);
+        else
+            OnSwipe?.Invoke(diff.y > 0 ? Vector2Int.up : Vector2Int.down);
     }
 }
