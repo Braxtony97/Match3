@@ -15,21 +15,25 @@
     public void Enter()
     {
         ResolveServices();
-        PlaymodeControllerInit();
+        ControllersInit();
     }
-
-    private void PlaymodeControllerInit()
-    {
-        BoardController boardController = new  BoardController(_board, _boardView);
-        boardController.Initialize();
-    }
-
+    
     private void ResolveServices()
     {
         _serviceLocator = ServiceLocator.Instance;
-        
         _board =  _serviceLocator.Resolve<IBoard>();
         _boardView =  _serviceLocator.Resolve<IBoardView>();
+    }
+
+    private void ControllersInit() 
+    {
+        BoardMatchFinder finder = new BoardMatchFinder(_board);
+        BoardGravityService gravityService = new BoardGravityService(_board, _boardView);
+        BoardViewUpdater viewUpdater = new BoardViewUpdater(_board, _boardView);
+        BoardAnimationService animationService = new BoardAnimationService(_board, _boardView, finder);
+        
+        BoardController boardController = new  BoardController(_board, _boardView, finder, gravityService, viewUpdater, animationService);
+        boardController.Initialize();
     }
 
     public void Exit()

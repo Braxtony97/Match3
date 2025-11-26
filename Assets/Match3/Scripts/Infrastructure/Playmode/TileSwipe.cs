@@ -41,6 +41,9 @@ public class TileSwipe : MonoBehaviour, IDragable, IPointerDownHandler, IPointer
         );
 
         Vector2 diff = pointerUpPos - _pointerDownPos;
+        
+        if (diff.magnitude < _maxSwipeDistance * 0.3f) 
+            return;
 
         if (Mathf.Abs(diff.x) > Mathf.Abs(diff.y))
             OnSwipe?.Invoke(diff.x > 0 ? Vector2Int.right : Vector2Int.left);

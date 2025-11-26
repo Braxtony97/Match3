@@ -39,6 +39,7 @@ public class TilePool : MonoBehaviour
         if (tile == null)
             return;
 
+        tile.OnSwipe += null;
         tile.SetSprite(null);
         tile.gameObject.SetActive(false);
         _tilePool.Enqueue(tile);

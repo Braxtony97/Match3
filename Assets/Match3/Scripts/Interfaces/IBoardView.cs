@@ -13,5 +13,7 @@ public interface IBoardView : IService
     void GenerateGridView(IBoard board);
     void SetTilePosition(IBoard board, TileView tile, int row, int col);
     Tween SwapTiles(int row, int col, int targetRow, int targetCol);
+    Tween AnimateSwapBack(TileView a, TileView b, float duration);
     void ClearTile(int row, int col);
+    Vector2 GetTilePositionInUI(int newRow, int col);
 }

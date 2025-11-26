@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class TileView : MonoBehaviour
 {
+    public int Row => _row;
+    public int Col => _col;
     public Sprite Sprite => _image.sprite;
     public event Action<int, int, Vector2Int> OnSwipe;
     public RectTransform RectTransform => _rectTransform;

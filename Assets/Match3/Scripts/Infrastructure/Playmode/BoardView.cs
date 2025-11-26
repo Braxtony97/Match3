@@ -85,21 +85,26 @@ public class BoardView : MonoBehaviour, IBoardView
 
     public Tween SwapTiles(int row, int col, int targetRow, int targetCol)
     {
-        TileView tempTile = _gridViews[row, col];
-        TileView targetTile = _gridViews[targetRow, targetCol];
-        
-        _gridViews[row, col] = targetTile;
-        _gridViews[targetRow, targetCol] = tempTile;
-        
-        tempTile.SetPositionInUI(targetRow, targetCol);
-        targetTile.SetPositionInUI(row, col);
+        TileView a = _gridViews[row, col];
+        TileView b = _gridViews[targetRow, targetCol];
 
-        return AnimateSwap(tempTile, targetTile)
-            .OnComplete(() =>
-            {
-                SetTilePosition(_board, tempTile, targetRow, targetCol);
-                SetTilePosition(_board, targetTile, row, col);
-            });
+        Vector2 posA = GetTilePositionInUI(row, col);
+        Vector2 posB = GetTilePositionInUI(targetRow, targetCol);
+
+        Sequence seq = DOTween.Sequence();
+        seq.Join(a.RectTransform.DOAnchorPos(posB, 0.2f));
+        seq.Join(b.RectTransform.DOAnchorPos(posA, 0.2f));
+
+        seq.OnComplete(() =>
+        {
+            _gridViews[row, col] = b;
+            _gridViews[targetRow, targetCol] = a;
+
+            a.SetPositionInUI(targetRow, targetCol);
+            b.SetPositionInUI(row, col);
+        });
+
+        return seq;
     }
     
     public Tween AnimateSwap(TileView a, TileView b, float duration = 0.2f)
@@ -113,6 +118,18 @@ public class BoardView : MonoBehaviour, IBoardView
 
         return seq;
     }
+    
+    public Tween AnimateSwapBack(TileView a, TileView b, float duration = 0.2f)
+    {
+        Vector2 posA = GetTilePositionInUI(a.Row, a.Col);
+        Vector2 posB = GetTilePositionInUI(b.Row, b.Col);
+
+        Sequence seq = DOTween.Sequence();
+        seq.Join(a.RectTransform.DOAnchorPos(posA, duration).SetEase(Ease.OutBack));
+        seq.Join(b.RectTransform.DOAnchorPos(posB, duration).SetEase(Ease.OutBack));
+
+        return seq; 
+    }
 
     public void ClearTile(int row, int col)
     {
@@ -122,5 +139,19 @@ public class BoardView : MonoBehaviour, IBoardView
 
         _tilePool.ReturnTileToPool(tile);
         _gridViews[row, col] = null;
+    }
+
+    public Vector2 GetTilePositionInUI(int row, int col)
+    {
+        float totalWidth = _board.Width * (_tileSize + _spacing) - _spacing;
+        float totalHeight = _board.Height * (_tileSize + _spacing) - _spacing;
+
+        float startX = -totalWidth / 2f;
+        float startY = totalHeight / 2f;
+
+        float x = startX + col * (_tileSize + _spacing);
+        float y = startY - row * (_tileSize + _spacing);
+
+        return new Vector2(x, y);
     }
 }
